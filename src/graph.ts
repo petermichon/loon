@@ -1,32 +1,4 @@
-const _example = {
-    grid: { rows: 3, columns: 5, altitudes: 3 },
-    elements: { targets: 2, radius: 1, balloons: 1, turns: 5 },
-    start: { row: 1, column: 2 },
-    targets: [
-        { row: 0, column: 2 },
-        { row: 0, column: 4 },
-    ],
-    // prettier-ignore
-    winds: [
-        [
-            [[0, 1], [0, 1], [0, 1], [0, 1], [0, 1]],
-            [[0, 1], [0, 1], [0, 1], [0, 1], [0, 1]],
-            [[0, 1], [0, 1], [0, 1], [0, 1], [0, 1]],
-        ],
-        [
-            [[-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0]],
-            [[-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0]],
-            [[-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0]],
-        ],
-        [
-            [[0, 1], [0, 1], [0, 1], [0, 2], [0, 1]],
-            [[0, 2], [0, 1], [0, 2], [0, 3], [0, 2]],
-            [[0, 1], [0, 1], [0, 1], [0, 2], [0, 1]],
-        ],
-    ],
-};
-
-export default function main() {
+export function graph() {
     /** The number of rows in the grid */
     let R: number; // 1 ≤ R ≤ 1000
 
