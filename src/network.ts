@@ -51,27 +51,23 @@ export function network() {
 
     {
         type Layer = number[][];
-        const layerSize = R * C * (A + 1);
-        const networkSize = T * 2;
+        const nbNodesPerLayer = R * C * (A + 1);
+        const nbLayers = T * 2;
 
-        const network: Layer[] = new Array(networkSize);
+        const network: Layer[] = new Array(nbLayers);
 
         for (let iLayer = 0; iLayer < 2; iLayer++) {
-            network[iLayer] = new Array(layerSize);
+            network[iLayer] = new Array(nbNodesPerLayer);
 
-            // Layers
             const isAltitudeLayer = iLayer % 2 == 0;
             const isWindLayer = iLayer % 2 == 1;
 
-            if (isAltitudeLayer) {
-                // Nodes
-                for (let iNode = 0; iNode < layerSize; iNode++) {
-                    network[iLayer][iNode] = new Array(layerSize);
+            for (let iNode = 0; iNode < nbNodesPerLayer; iNode++) {
+                network[iLayer][iNode] = new Array(nbNodesPerLayer);
+                for (let iEdge = 0; iEdge < nbNodesPerLayer; iEdge++) {
+                    network[iLayer][iNode][iEdge] = 0;
 
-                    // Edges
-                    for (let iEdge = 0; iEdge < layerSize; iEdge++) {
-                        network[iLayer][iNode][iEdge] = 0;
-
+                    if (isAltitudeLayer) {
                         const isSameCell = iNode % C == iEdge % C;
                         if (isSameCell) {
                             if (iNode < C) {
@@ -84,32 +80,18 @@ export function network() {
                             }
                         }
                     }
-                }
-            }
-            const w = [
-                [
-                    { r: 0, c: 0 },
-                    { r: 0, c: 0 },
-                    { r: 0, c: 0 },
-                ],
-            ];
-            w.push(winds[0][0]);
 
-            if (isWindLayer) {
-                for (let iNode = 0; iNode < layerSize; iNode++) {
-                    network[iLayer][iNode] = new Array(layerSize);
-                    for (let iEdge = 0; iEdge < layerSize; iEdge++) {
-                        network[iLayer][iNode][iEdge] = 0;
-                    }
-                    if (iNode < 3) {
-                        network[iLayer][iNode][iNode] = 1;
-                    }
-                    if (iNode >= 3) {
-                        const dR = winds[0][0][0].r;
-                        const dC = winds[0][0][0].c;
-                        const nR = ((iNode + dR) % C) + 3;
-                        const nC = ((iNode + dC) % C) + 3;
-                        network[iLayer][nR][nC] = 1;
+                    if (isWindLayer) {
+                        if (iNode < 3) {
+                            network[iLayer][iNode][iNode] = 1;
+                        }
+                        if (iNode >= 3) {
+                            const dR = winds[0][0][0].r;
+                            const dC = winds[0][0][0].c;
+                            const nR = ((iNode + dR) % C) + 3;
+                            const nC = ((iNode + dC) % C) + 3;
+                            network[iLayer][nR][nC] = 1;
+                        }
                     }
                 }
             }
