@@ -11,7 +11,7 @@ type FileContent = {
     winds: { row: number; column: number }[][][];
 };
 
-export function parse(str: string): FileContent {
+export function extractContent(str: string): FileContent {
     const fileContent: FileContent = {
         grid: { rows: 0, columns: 0, altitudes: 0 },
         elements: { targets: 0, radius: 0, balloons: 0, turns: 0 },
