@@ -1,4 +1,4 @@
-export function graph() {
+export function network() {
     /** The number of rows in the grid */
     let R: number; // 1 ≤ R ≤ 1000
 
