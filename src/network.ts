@@ -69,21 +69,22 @@ export function network() {
 
         const network: Layer[] = [];
 
-        // Add winds for altitude 0 (ground winds)
-        winds = [
-            [
-                [
-                    { r: 0, c: 0 },
-                    { r: 0, c: 0 },
-                    { r: 0, c: 0 },
-                ],
-                [
-                    { r: 0, c: 0 },
-                    { r: 0, c: 0 },
-                    { r: 0, c: 0 },
-                ],
-            ],
-        ].concat(winds);
+        // Add winds for altitude 0
+        {
+            const groundWinds: { r: number; c: number }[][][] = [];
+            groundWinds[0] = [];
+
+            for (let iRow = 0; iRow < R; iRow++) {
+                groundWinds[0][iRow] = [];
+                for (let iColumn = 0; iColumn < C; iColumn++) {
+                    groundWinds[0][iRow][iColumn] = { r: 0, c: 0 };
+                }
+            }
+
+            winds = groundWinds.concat(winds);
+        }
+
+        console.log(winds);
 
         for (let iLayer = 0; iLayer < nbLayers; iLayer++) {
             network[iLayer] = [];
@@ -124,9 +125,11 @@ export function network() {
                         // 2alt 2row 3col
                         // winds[a][r][c]
                         const iAlt = Math.floor(iNode / altSize);
+                        const iRow = Math.floor((iNode % altSize) / C);
+                        const iCol = (iNode % altSize) % C;
 
-                        const windC = winds[iAlt][1][2].c;
-                        const windR = winds[iAlt][1][2].r;
+                        const windC = winds[iAlt][iRow][iCol].c;
+                        const windR = winds[iAlt][iRow][iCol].r;
 
                         const windShift = (windC % C) + (windR % R) * C;
                         const pos = ((iNode % altSize) + windShift) % altSize;
