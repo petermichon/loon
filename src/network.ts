@@ -33,7 +33,18 @@ export function network() {
             winds: [
                 [
                     [
+                        { r: 1, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 },
+                    ],
+                    [
                         { r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 },
+                    ],
+                ],
+                [
+                    [
+                        { r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 },
+                    ],
+                    [
+                        { r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 },
                     ],
                 ],
             ],
@@ -67,41 +78,50 @@ export function network() {
             for (let iNode = 0; iNode < nbNodesPerLayer; iNode++) {
                 network[iLayer][iNode] = [];
 
+                // The number of nodes for a given altitude
+                const altSize = C * R; // nbNodesPerAltitude
+
                 for (let iEdge = 0; iEdge < nbNodesPerLayer; iEdge++) {
                     network[iLayer][iNode][iEdge] = 0;
 
                     if (isAltitudeLayer) {
-                        // The distance in a layer between two nodes that represents the same cell but at different altitudes
-                        const gap = C * R;
-
                         // True if the edge is between two cells that represents the same cell, at == or != altitudes
-                        const isSameCell = iNode % gap == iEdge % gap;
+                        const isSameCell = iNode % altSize == iEdge % altSize;
 
                         if (isSameCell) {
                             // True if the edge is close enough for an altitude change, and not at altitude 0 (ground)
-                            const inLowerRange = iNode <= iEdge + gap;
-                            const inUpperRange = iNode >= iEdge - gap;
+                            const inLowerRange = iNode <= iEdge + altSize;
+                            const inUpperRange = iNode >= iEdge - altSize;
                             const inRange = inLowerRange && inUpperRange;
-                            const isNotGround = iNode < gap || gap <= iEdge;
+                            const isNotGround =
+                                iNode < altSize || altSize <= iEdge;
 
                             if (inRange && isNotGround) {
                                 network[iLayer][iNode][iEdge] = 1;
                             }
                         }
                     }
+                }
+                if (isWindLayer) {
+                    console.log(`iNode: ${iNode}`);
 
-                    if (isWindLayer) {
-                        if (iNode < C) {
-                            network[iLayer][iNode][iNode] = 1;
-                        }
-                        if (iNode >= C) {
-                            const dR = winds[0][0][0].r;
-                            const dC = winds[0][0][0].c;
-                            const nR = ((iNode + dR) % C) + C;
-                            const nC = ((iNode + dC) % C) + C;
-                            network[iLayer][nR][nC] = 1;
-                        }
+                    let newI = iNode;
+
+                    // Is altitude 0
+                    const isGround = iNode < altSize;
+
+                    if (!isGround) {
+                        // 2alt 2row 3col
+
+                        const windC = winds[0][0][0].c;
+                        const windR = winds[0][0][0].r;
+
+                        const windShift = (windC % C) + (windR % R) * C;
+                        const pos = ((iNode % altSize) + windShift) % altSize;
+                        const iAlt = Math.floor(iNode / altSize);
+                        newI = pos + altSize * iAlt;
                     }
+                    network[iLayer][iNode][newI] = 1;
                 }
             }
         }
