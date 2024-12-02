@@ -33,7 +33,7 @@ export function network() {
             winds: [
                 [
                     [
-                        { r: 1, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 },
+                        { r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 },
                     ],
                     [
                         { r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 },
@@ -69,6 +69,22 @@ export function network() {
 
         const network: Layer[] = [];
 
+        // Add winds for altitude 0 (ground winds)
+        winds = [
+            [
+                [
+                    { r: 0, c: 0 },
+                    { r: 0, c: 0 },
+                    { r: 0, c: 0 },
+                ],
+                [
+                    { r: 0, c: 0 },
+                    { r: 0, c: 0 },
+                    { r: 0, c: 0 },
+                ],
+            ],
+        ].concat(winds);
+
         for (let iLayer = 0; iLayer < nbLayers; iLayer++) {
             network[iLayer] = [];
 
@@ -103,22 +119,17 @@ export function network() {
                     }
                 }
                 if (isWindLayer) {
-                    console.log(`iNode: ${iNode}`);
-
-                    let newI = iNode;
-
-                    // Is altitude 0
-                    const isGround = iNode < altSize;
-
-                    if (!isGround) {
+                    let newI = 0;
+                    {
                         // 2alt 2row 3col
+                        // winds[a][r][c]
+                        const iAlt = Math.floor(iNode / altSize);
 
-                        const windC = winds[0][0][0].c;
-                        const windR = winds[0][0][0].r;
+                        const windC = winds[iAlt][1][2].c;
+                        const windR = winds[iAlt][1][2].r;
 
                         const windShift = (windC % C) + (windR % R) * C;
                         const pos = ((iNode % altSize) + windShift) % altSize;
-                        const iAlt = Math.floor(iNode / altSize);
                         newI = pos + altSize * iAlt;
                     }
                     network[iLayer][iNode][newI] = 1;
