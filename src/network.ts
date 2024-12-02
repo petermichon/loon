@@ -20,33 +20,69 @@ export function network() {
     /** The number of turns in the simulation */
     let T: number; // 1 ≤ T ≤ 1000
 
+    let targets: { r: number; c: number }[];
+
     let winds: { r: number; c: number }[][][];
 
     {
         // The content of the input data file
         const input = {
-            grid: { rows: 2, columns: 3, altitudes: 2 },
+            grid: { rows: 2, columns: 3, altitudes: 1 },
             elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
             start: { row: 0, column: 0 },
-            targets: [{ row: 0, column: 1 }],
-            // prettier-ignore
+            targets: [{ r: 0, c: 0 }],
             winds: [
+                // Altitude 1 winds
                 [
                     [
-                        { r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 },
+                        { r: 0, c: 0 },
+                        { r: 0, c: 0 },
+                        { r: 0, c: 0 },
                     ],
                     [
-                        { r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 },
+                        { r: 0, c: 0 },
+                        { r: 0, c: 0 },
+                        { r: 0, c: 0 },
                     ],
                 ],
+                // Altitude 2 winds
                 [
                     [
-                        { r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 },
+                        { r: 0, c: 0 },
+                        { r: 0, c: 0 },
+                        { r: 0, c: 0 },
                     ],
                     [
-                        { r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 },
+                        { r: 0, c: 0 },
+                        { r: 0, c: 0 },
+                        { r: 0, c: 0 },
                     ],
                 ],
+                // Altitude 3 winds
+                // [
+                //     [
+                //         { r: 1, c: 0 },
+                //         { r: 1, c: 0 },
+                //         { r: 1, c: 0 },
+                //     ],
+                //     [
+                //         { r: 1, c: 0 },
+                //         { r: 1, c: 0 },
+                //         { r: 1, c: 0 },
+                //     ],
+                // ],
+                // [
+                //     [
+                //         { r: 1, c: 0 },
+                //         { r: 1, c: 0 },
+                //         { r: 1, c: 0 },
+                //     ],
+                //     [
+                //         { r: 1, c: 0 },
+                //         { r: 1, c: 0 },
+                //         { r: 1, c: 0 },
+                //     ],
+                // ],
             ],
         };
 
@@ -57,6 +93,7 @@ export function network() {
         _V = input.elements.radius;
         _B = input.elements.balloons;
         T = input.elements.turns;
+        targets = input.targets;
         winds = input.winds;
     }
 
@@ -69,7 +106,7 @@ export function network() {
 
         const network: Layer[] = [];
 
-        // Add winds for altitude 0
+        // Add altitude 0 winds
         {
             const groundWinds: { r: number; c: number }[][][] = [];
             groundWinds[0] = [];
@@ -83,8 +120,6 @@ export function network() {
 
             winds = groundWinds.concat(winds);
         }
-
-        console.log(winds);
 
         for (let iLayer = 0; iLayer < nbLayers; iLayer++) {
             network[iLayer] = [];
@@ -119,10 +154,12 @@ export function network() {
                         }
                     }
                 }
+
                 if (isWindLayer) {
                     let newI = 0;
+
+                    let weight = 1;
                     {
-                        // 2alt 2row 3col
                         // winds[a][r][c]
                         const iAlt = Math.floor(iNode / altSize);
                         const iRow = Math.floor((iNode % altSize) / C);
@@ -134,8 +171,20 @@ export function network() {
                         const windShift = (windC % C) + (windR % R) * C;
                         const pos = ((iNode % altSize) + windShift) % altSize;
                         newI = pos + altSize * iAlt;
+
+                        // Targets Coverage
+
+                        const target = targets[0];
+                        const targetPos1 = (target.c % C) + (target.r % R) * C;
+
+                        const isGround = iAlt == 0;
+                        const coversTarget = iNode % altSize == targetPos1;
+
+                        if (coversTarget && !isGround) {
+                            weight += 1;
+                        }
                     }
-                    network[iLayer][iNode][newI] = 1;
+                    network[iLayer][iNode][newI] = weight;
                 }
             }
         }
