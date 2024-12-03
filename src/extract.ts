@@ -7,8 +7,8 @@ type FileContent = {
         turns: number;
     };
     start: { row: number; column: number };
-    targets: { row: number; column: number }[];
-    winds: { row: number; column: number }[][][];
+    targets: { r: number; c: number }[];
+    winds: { r: number; c: number }[][][];
 };
 
 export function extractContent(str: string): FileContent {
@@ -41,8 +41,8 @@ export function extractContent(str: string): FileContent {
     const nbTargets = fileContent.elements.targets;
     for (let i = 0; i < nbTargets; i++) {
         fileContent.targets.push({
-            row: Number(data[3 + i][0]),
-            column: Number(data[3 + i][1]),
+            r: Number(data[3 + i][0]),
+            c: Number(data[3 + i][1]),
         });
     }
 
@@ -56,8 +56,8 @@ export function extractContent(str: string): FileContent {
             fileContent.winds[iA].push([]);
             for (let iC = 0; iC < nbColumns * 2; iC += 2) {
                 fileContent.winds[iA][iR].push({
-                    row: Number(data[5 + iA * nbRows + iR][iC]),
-                    column: Number(data[5 + iA * nbRows + iR][iC + 1]),
+                    r: Number(data[5 + iA * nbRows + iR][iC]),
+                    c: Number(data[5 + iA * nbRows + iR][iC + 1]),
                 });
             }
         }

@@ -1,4 +1,21 @@
-export function network() {
+type FileContent = {
+    grid: { rows: number; columns: number; altitudes: number };
+    elements: {
+        targets: number;
+        radius: number;
+        balloons: number;
+        turns: number;
+    };
+    start: { row: number; column: number };
+    targets: { r: number; c: number }[];
+    winds: { r: number; c: number }[][][];
+};
+
+type Layer = { n: number; w: number }[][];
+
+export function generateNetwork(fileContent: FileContent): Layer[] {
+    const network: Layer[] = [];
+
     /** The number of rows in the grid */
     let R: number; // 1 ≤ R ≤ 1000
 
@@ -25,74 +42,21 @@ export function network() {
     let winds: { r: number; c: number }[][][];
 
     {
-        // The content of the input data file
-        const input = {
-            grid: { rows: 2, columns: 3, altitudes: 3 },
-            elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
-            start: { row: 0, column: 0 },
-            targets: [{ r: 0, c: 0 }],
-            winds: [
-                // Altitude 1 winds
-                [
-                    [
-                        { r: 0, c: 0 },
-                        { r: 0, c: 0 },
-                        { r: 0, c: 0 },
-                    ],
-                    [
-                        { r: 0, c: 0 },
-                        { r: 0, c: 0 },
-                        { r: 0, c: 0 },
-                    ],
-                ],
-                // Altitude 2 winds
-                [
-                    [
-                        { r: 0, c: 1 },
-                        { r: 0, c: 1 },
-                        { r: 0, c: 1 },
-                    ],
-                    [
-                        { r: 0, c: 1 },
-                        { r: 0, c: 1 },
-                        { r: 0, c: 1 },
-                    ],
-                ],
-                // Altitude 3 winds
-                [
-                    [
-                        { r: 1, c: 0 },
-                        { r: 1, c: 0 },
-                        { r: 1, c: 0 },
-                    ],
-                    [
-                        { r: 1, c: 0 },
-                        { r: 1, c: 0 },
-                        { r: 1, c: 0 },
-                    ],
-                ],
-            ],
-        };
-
-        R = input.grid.rows;
-        C = input.grid.columns;
-        A = input.grid.altitudes;
-        L = input.elements.targets;
-        _V = input.elements.radius;
-        _B = input.elements.balloons;
-        T = input.elements.turns;
-        targets = input.targets;
-        winds = input.winds;
+        R = fileContent.grid.rows;
+        C = fileContent.grid.columns;
+        A = fileContent.grid.altitudes;
+        L = fileContent.elements.targets;
+        _V = fileContent.elements.radius;
+        _B = fileContent.elements.balloons;
+        T = fileContent.elements.turns;
+        targets = fileContent.targets;
+        winds = fileContent.winds;
     }
 
     {
-        type Layer = { node: number; weight: number }[][];
-
         const nbAltitudes = A + 1;
         const nbLayers = T * 2;
         const nbNodesPerLayer = R * C * nbAltitudes;
-
-        const network: Layer[] = [];
 
         // Add altitude 0 winds
         {
@@ -165,8 +129,8 @@ export function network() {
 
                     for (let edge = below; edge <= above; edge += altSize) {
                         network[iLayer][iNode].push({
-                            node: edge,
-                            weight: weight,
+                            n: edge,
+                            w: weight,
                         });
                     }
                 }
@@ -188,29 +152,29 @@ export function network() {
                         node = pos + altSize * iAlt;
                     }
                     network[iLayer][iNode].push({
-                        node: node,
-                        weight: 1,
+                        n: node,
+                        w: 1,
                     });
                 }
             }
         }
 
         // DEBUG
-        for (let iLayer = 0; iLayer < network.length; iLayer++) {
-            for (let iNode = 0; iNode < nbNodesPerLayer; iNode++) {
-                let str = "";
-                str += iNode.toString().padStart(2, " ") + ": ";
-                const nbEdge = network[iLayer][iNode].length;
-                for (let iEdge = 0; iEdge < nbEdge; iEdge++) {
-                    const edge = network[iLayer][iNode][iEdge].node;
-                    const weight = network[iLayer][iNode][iEdge].weight;
-                    str += edge.toString().padStart(2, " ") + " ";
-                    str += "(" + weight.toString() + ")  ";
-                }
-                console.log(str);
-            }
-            console.log();
-        }
+        // for (let iLayer = 0; iLayer < network.length; iLayer++) {
+        //     for (let iNode = 0; iNode < nbNodesPerLayer; iNode++) {
+        //         let str = "";
+        //         str += iNode.toString().padStart(2, " ") + ": ";
+        //         const nbEdge = network[iLayer][iNode].length;
+        //         for (let iEdge = 0; iEdge < nbEdge; iEdge++) {
+        //             const edge = network[iLayer][iNode][iEdge].node;
+        //             const weight = network[iLayer][iNode][iEdge].weight;
+        //             str += edge.toString().padStart(2, " ") + " ";
+        //             str += "(" + weight.toString() + ")  ";
+        //         }
+        //         console.log(str);
+        //     }
+        //     console.log();
+        // }
 
         // DEBUG
         // for (let iLayer = 0; iLayer < network.length; iLayer++) {
@@ -220,4 +184,6 @@ export function network() {
         //     console.log();
         // }
     }
+
+    return network;
 }
