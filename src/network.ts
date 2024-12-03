@@ -142,30 +142,10 @@ export function network() {
                         }
                     }
 
-                    for (let edge = below; edge <= above; edge += altSize) {
-                        network[iLayer][iNode].push({
-                            node: edge,
-                            weight: 1,
-                        });
-                    }
-                }
-
-                if (isWindLayer) {
-                    let node = 0;
-
                     let weight = 1;
+
                     {
-                        // winds[a][r][c]
                         const iAlt = Math.floor(iNode / altSize);
-                        const iRow = Math.floor((iNode % altSize) / C);
-                        const iCol = (iNode % altSize) % C;
-
-                        const windC = winds[iAlt][iRow][iCol].c;
-                        const windR = winds[iAlt][iRow][iCol].r;
-
-                        const windShift = (windC % C) + (windR % R) * C;
-                        const pos = ((iNode % altSize) + windShift) % altSize;
-                        node = pos + altSize * iAlt;
 
                         // Targets Coverage
                         // Increase edge weight if target is covered
@@ -182,9 +162,34 @@ export function network() {
                             }
                         }
                     }
+
+                    for (let edge = below; edge <= above; edge += altSize) {
+                        network[iLayer][iNode].push({
+                            node: edge,
+                            weight: weight,
+                        });
+                    }
+                }
+
+                if (isWindLayer) {
+                    let node = 0;
+
+                    {
+                        // winds[a][r][c]
+                        const iAlt = Math.floor(iNode / altSize);
+                        const iRow = Math.floor((iNode % altSize) / C);
+                        const iCol = (iNode % altSize) % C;
+
+                        const windC = winds[iAlt][iRow][iCol].c;
+                        const windR = winds[iAlt][iRow][iCol].r;
+
+                        const windShift = (windC % C) + (windR % R) * C;
+                        const pos = ((iNode % altSize) + windShift) % altSize;
+                        node = pos + altSize * iAlt;
+                    }
                     network[iLayer][iNode].push({
                         node: node,
-                        weight: weight,
+                        weight: 1,
                     });
                 }
             }
@@ -198,9 +203,9 @@ export function network() {
                 const nbEdge = network[iLayer][iNode].length;
                 for (let iEdge = 0; iEdge < nbEdge; iEdge++) {
                     const edge = network[iLayer][iNode][iEdge].node;
-                    // const weight = network[iLayer][iNode][iEdge].weight;
+                    const weight = network[iLayer][iNode][iEdge].weight;
                     str += edge.toString().padStart(2, " ") + " ";
-                    // str += "<" + weight.toString() + " ";
+                    str += "(" + weight.toString() + ")  ";
                 }
                 console.log(str);
             }
