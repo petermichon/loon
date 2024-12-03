@@ -328,32 +328,61 @@ export function network() {
                 network[iLayer][iNode] = [];
 
                 // The number of nodes for a given altitude
-                const altSize = C * R; // nbNodesPerAltitude
+                const altSize = C * R; // i.e. nbNodesPerAltitude
 
-                for (let iEdge = 0; iEdge < nbNodesPerLayer; iEdge++) {
-                    // network[iLayer][iNode][iEdge] = { node: 0, weight: 0 };
+                if (isAltitudeLayer) {
+                    let below = iNode - altSize;
+                    let above = iNode + altSize;
 
-                    if (isAltitudeLayer) {
-                        // True if the edge is between two cells that represents the same cell, at == or != altitudes
-                        const isSameCell = iNode % altSize == iEdge % altSize;
+                    if (below < 0) {
+                        below += altSize;
+                    }
+                    if (above >= nbNodesPerLayer) {
+                        above -= altSize;
+                    }
 
-                        if (isSameCell) {
-                            // True if the edge is close enough for an altitude change, and not at altitude 0 (ground)
-                            const inLowerRange = iNode <= iEdge + altSize;
-                            const inUpperRange = iNode >= iEdge - altSize;
-                            const inRange = inLowerRange && inUpperRange;
-                            const isNotGround =
-                                iNode < altSize || altSize <= iEdge;
+                    const isGround = iNode < altSize;
 
-                            if (inRange && isNotGround) {
-                                network[iLayer][iNode].push({
-                                    node: iEdge,
-                                    weight: 1,
-                                });
-                            }
+                    if (!isGround) {
+                        const belowIsGround = below < altSize;
+                        if (belowIsGround) {
+                            // Should only happen at altitude 1
+                            below += altSize;
                         }
                     }
+
+                    for (let edge = below; edge <= above; edge += altSize) {
+                        network[iLayer][iNode].push({
+                            node: edge,
+                            weight: 1,
+                        });
+                    }
                 }
+
+                // for (let iEdge = 0; iEdge < nbNodesPerLayer; iEdge++) {
+                //     if (isAltitudeLayer) {
+                //         // For each edge to a node that represents the same cell
+
+                //         // True if the edge is between two cells that represents the same cell, at == or != altitudes
+                //         const isSameCell = iNode % altSize == iEdge % altSize;
+
+                //         if (isSameCell) {
+                //             // True if the edge is close enough for an altitude change, and not at altitude 0 (ground)
+                //             const inLowerRange = iNode <= iEdge + altSize;
+                //             const inUpperRange = iNode >= iEdge - altSize;
+                //             const inRange = inLowerRange && inUpperRange;
+                //             const isNotGround =
+                //                 iNode < altSize || altSize <= iEdge;
+
+                //             if (inRange && isNotGround) {
+                //                 // network[iLayer][iNode].push({
+                //                 //     node: iEdge,
+                //                 //     weight: 1,
+                //                 // });
+                //             }
+                //         }
+                //     }
+                // }
 
                 if (isWindLayer) {
                     let node = 0;
