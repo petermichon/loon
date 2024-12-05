@@ -1,47 +1,47 @@
-// import { extractContent } from "./extract.ts";
-// import { generateNetwork } from "./network.ts";
-// import { pathfind } from "./pathfind.ts";
-
-// import { Graph } from "@dagrejs/graphlib";
-import dijkstra from "dijkstrajs";
-
-// import { formatContent } from "./format.ts";
+import { extractContent } from "./extract.ts";
+import { generateNetwork } from "./network.ts";
+import { pathfind } from "./pathfind.ts";
+import { formatContent } from "./format.ts";
 
 export default function main() {
-    // const fileAsString = Deno.readTextFileSync("./src/input/a_example.in");
+    {
+        const fileAsString = Deno.readTextFileSync("./src/input/a_example.in");
 
-    // const fileContent = extractContent(fileAsString);
+        const fileContent = extractContent(fileAsString);
 
-    // console.log(fileContent);
+        // console.log(fileContent);
+    }
 
-    // const fileContent = {
-    //     grid: { rows: 2, columns: 3, altitudes: 3 },
-    //     elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
-    //     start: { row: 0, column: 0 },
-    //     targets: [{ r: 0, c: 0 }],
-    //     //prettier-ignore
-    //     winds: [
-    //         // Altitude 1 winds
-    //         [
-    //             [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
-    //             [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
-    //         ],
-    //         // Altitude 2 winds
-    //         [
-    //             [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
-    //             [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
-    //         ],
-    //         // Altitude 3 winds
-    //         [
-    //             [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
-    //             [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
-    //         ],
-    //     ],
-    // };
+    {
+        const fileContent = {
+            grid: { rows: 2, columns: 3, altitudes: 3 },
+            elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
+            start: { row: 0, column: 0 },
+            targets: [{ r: 0, c: 0 }],
+            //prettier-ignore
+            winds: [
+                // Altitude 1 winds
+                [
+                    [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
+                    [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
+                ],
+                // Altitude 2 winds
+                [
+                    [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
+                    [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
+                ],
+                // Altitude 3 winds
+                [
+                    [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
+                    [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
+                ],
+            ],
+        };
 
-    // const network = generateNetwork(fileContent);
+        const network = generateNetwork(fileContent);
 
-    // console.log(network);
+        // console.log(network);
+    }
 
     //prettier-ignore
     // const network = [
@@ -147,6 +147,7 @@ export default function main() {
     // ]
 
     type Layer = { coverage: number, edges: number[] }[];
+
     const network: Layer[] = [
         // Copy 1 (original)
         [
@@ -240,53 +241,19 @@ export default function main() {
         ],
     ];
 
-    const layerSize = network[0].length;
-    const networkSize = network.length * layerSize;
+    let altitudes: number[] = [];
 
-    const startNode = "start";
-    const endNode = "end";
-
-    const altitudes: number[] = [];
-
-    const graph: { [key: string]: { [key: string]: number } } = {};
-
-    graph[startNode] = { 0: 0 };
-
-    for (let iLayer = 0; iLayer < network.length; iLayer++) {
-        const layer = network[iLayer];
-
-        for (let iNode = 0; iNode < layer.length; iNode++) {
-            const node = iNode + iLayer * layer.length;
-            graph[node] = {};
-
-            for (const edge of layer[iNode].edges) {
-                const weight = 0 - network[iLayer][edge].coverage;
-                graph[node][edge + (iLayer + 1) * layer.length] = weight;
-            }
-        }
+    {
+        altitudes = pathfind(network);
     }
 
-    // Create a last layer to connect to the end node
-    for (let node = networkSize; node < networkSize + layerSize; node++) {
-        graph[node] = {};
-        graph[node][endNode] = 0;
+    console.log(altitudes);
+
+    {
+        const altitudes = [1, 1, 1, 0, 0];
+
+        const outputContent = formatContent(altitudes);
+
+        Deno.writeTextFileSync("./src/output/a_example.out", outputContent);
     }
-
-    // Add end node
-    graph[endNode] = {};
-
-    console.log(graph);
-
-    const path = dijkstra.find_path(graph, startNode, endNode);
-
-    console.log(path);
-
-    altitudes;
-    // console.log(altitudes);
-
-    // const altitudeAdjustments = [1, 1, 1, 0, 0];
-
-    // const outputContent = formatContent(altitudeAdjustments);
-
-    // Deno.writeTextFileSync("./src/output/a_example.out", outputContent);
 }
