@@ -9,12 +9,38 @@ export default function main() {
 
         const fileContent = extractContent(fileAsString);
 
+        fileContent;
         // console.log(fileContent);
     }
 
     {
+        // const fileContent = {
+        //     grid: { rows: 2, columns: 3, altitudes: 3 },
+        //     elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
+        //     start: { row: 0, column: 0 },
+        //     targets: [{ r: 0, c: 0 }],
+        //     //prettier-ignore
+        //     winds: [
+        //         // Altitude 1 winds
+        //         [
+        //             [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
+        //             [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
+        //         ],
+        //         // Altitude 2 winds
+        //         [
+        //             [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
+        //             [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
+        //         ],
+        //         // Altitude 3 winds
+        //         [
+        //             [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
+        //             [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
+        //         ],
+        //     ],
+        // };
+
         const fileContent = {
-            grid: { rows: 2, columns: 3, altitudes: 3 },
+            grid: { rows: 1, columns: 3, altitudes: 3 },
             elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
             start: { row: 0, column: 0 },
             targets: [{ r: 0, c: 0 }],
@@ -27,20 +53,46 @@ export default function main() {
                 ],
                 // Altitude 2 winds
                 [
-                    [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
-                    [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
+                    [{ r: 0, c: -1 }, { r: 0, c: -1 }, { r: 0, c: -1 }],
+                    [{ r: 0, c: -1 }, { r: 0, c: -1 }, { r: 0, c: -1 }],
                 ],
                 // Altitude 3 winds
                 [
-                    [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
-                    [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
+                    [{ r: 0, c: 0 }, { r: 0, c: 0 }, { r: 0, c: 0 }],
+                    [{ r: 0, c: 0 }, { r: 0, c: 0 }, { r: 0, c: 0 }],
                 ],
             ],
         };
 
+        // (node + ...) % altSize
+        // 0
+        // 0
+        // 0
+        // 0
+        // 0
+        // 0
+        // 1
+        // 1
+        // 1
+        // 1
+        // 1
+        // 1
+        // 3
+        // 3
+        // 3
+        // 3
+        // 3
+        // 3
+        // 4
+        // 4
+        // 4
+        // 4
+        // 4
+        // 4
+
         const network = generateNetwork(fileContent);
 
-        // console.log(network);
+        console.log(network);
     }
 
     //prettier-ignore
@@ -151,18 +203,19 @@ export default function main() {
     const network: Layer[] = [
         // Copy 1 (original)
         [
+            // Altitude 0 (ground)
             { coverage: 0, edges: [0, 4] },
             { coverage: 0, edges: [1, 5] },
             { coverage: 0, edges: [2, 3] },
-
+            // Altitude 1
             { coverage: 1, edges: [4, 8] },
             { coverage: 0, edges: [5, 6] },
             { coverage: 0, edges: [3, 7] },
-
+            // Altitude 2
             { coverage: 1, edges: [4, 8, 9] },
             { coverage: 0, edges: [5, 6, 10] },
             { coverage: 0, edges: [3, 7, 11] },
-
+            // Altitude 3
             { coverage: 1, edges: [8, 9] },
             { coverage: 0, edges: [6, 10] },
             { coverage: 0, edges: [7, 11] },
@@ -242,12 +295,12 @@ export default function main() {
     ];
 
     let altitudes: number[] = [];
-
     {
         altitudes = pathfind(network);
     }
 
-    console.log(altitudes);
+    altitudes;
+    // console.log(altitudes);
 
     {
         const altitudes = [1, 1, 1, 0, 0];
