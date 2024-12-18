@@ -52,7 +52,7 @@ export function pathfind(network: Layer[]): number[] {
         const pathAltitudes = [];
         for (let i = 1; i < path.length - 1; i++) {
             const layerSize = network[0].length;
-            const altitudeSize = 3;
+            const altitudeSize = 15; // R * C
 
             const altitude = path[i] % layerSize;
 
@@ -63,7 +63,7 @@ export function pathfind(network: Layer[]): number[] {
 
             pathAltitudes.push(pathAlt);
         }
-        // console.log(pathAltitudes);
+        console.log(pathAltitudes);
 
         for (let i = 0; i < pathAltitudes.length - 1; i++) {
             const shift = pathAltitudes[i + 1] - pathAltitudes[i];

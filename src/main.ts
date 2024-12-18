@@ -4,96 +4,65 @@ import { pathfind } from "./pathfind.ts";
 import { formatContent } from "./format.ts";
 
 export default function main() {
-    {
-        const fileAsString = Deno.readTextFileSync("./src/input/a_example.in");
+    const fileAsString = Deno.readTextFileSync("./src/input/a_example.in");
 
-        const fileContent = extractContent(fileAsString);
+    const fileContent = extractContent(fileAsString);
 
-        fileContent;
-        // console.log(fileContent);
-    }
+    console.log(fileContent);
 
-    {
-        // const fileContent = {
-        //     grid: { rows: 2, columns: 3, altitudes: 3 },
-        //     elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
-        //     start: { row: 0, column: 0 },
-        //     targets: [{ r: 0, c: 0 }],
-        //     //prettier-ignore
-        //     winds: [
-        //         // Altitude 1 winds
-        //         [
-        //             [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
-        //             [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
-        //         ],
-        //         // Altitude 2 winds
-        //         [
-        //             [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
-        //             [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
-        //         ],
-        //         // Altitude 3 winds
-        //         [
-        //             [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
-        //             [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
-        //         ],
-        //     ],
-        // };
+    // const fileContent = {
+    //     grid: { rows: 2, columns: 3, altitudes: 3 },
+    //     elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
+    //     start: { row: 0, column: 0 },
+    //     targets: [{ r: 0, c: 0 }],
+    //     //prettier-ignore
+    //     winds: [
+    //         // Altitude 1 winds
+    //         [
+    //             [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
+    //             [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
+    //         ],
+    //         // Altitude 2 winds
+    //         [
+    //             [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
+    //             [{ r: 1, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 0 }],
+    //         ],
+    //         // Altitude 3 winds
+    //         [
+    //             [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
+    //             [{ r: 1, c: 1 }, { r: 1, c: 1 }, { r: 1, c: 1 }],
+    //         ],
+    //     ],
+    // };
 
-        const fileContent = {
-            grid: { rows: 1, columns: 3, altitudes: 3 },
-            elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
-            start: { row: 0, column: 0 },
-            targets: [{ r: 0, c: 0 }],
-            //prettier-ignore
-            winds: [
-                // Altitude 1 winds
-                [
-                    [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
-                    [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
-                ],
-                // Altitude 2 winds
-                [
-                    [{ r: 0, c: -1 }, { r: 0, c: -1 }, { r: 0, c: -1 }],
-                    [{ r: 0, c: -1 }, { r: 0, c: -1 }, { r: 0, c: -1 }],
-                ],
-                // Altitude 3 winds
-                [
-                    [{ r: 0, c: 0 }, { r: 0, c: 0 }, { r: 0, c: 0 }],
-                    [{ r: 0, c: 0 }, { r: 0, c: 0 }, { r: 0, c: 0 }],
-                ],
-            ],
-        };
+    // const fileContent = {
+    //     grid: { rows: 1, columns: 3, altitudes: 3 },
+    //     elements: { targets: 1, radius: 1, balloons: 1, turns: 1 },
+    //     start: { row: 0, column: 0 },
+    //     targets: [{ r: 0, c: 0 }],
+    //     //prettier-ignore
+    //     winds: [
+    //             // Altitude 1 winds
+    //             [
+    //                 [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
+    //                 [{ r: 0, c: 1 }, { r: 0, c: 1 }, { r: 0, c: 1 }],
+    //             ],
+    //             // Altitude 2 winds
+    //             [
+    //                 [{ r: 0, c: -1 }, { r: 0, c: -1 }, { r: 0, c: -1 }],
+    //                 [{ r: 0, c: -1 }, { r: 0, c: -1 }, { r: 0, c: -1 }],
+    //             ],
+    //             // Altitude 3 winds
+    //             [
+    //                 [{ r: 0, c: 0 }, { r: 0, c: 0 }, { r: 0, c: 0 }],
+    //                 [{ r: 0, c: 0 }, { r: 0, c: 0 }, { r: 0, c: 0 }],
+    //             ],
+    //         ],
+    // };
 
-        // (node + ...) % altSize
-        // 0
-        // 0
-        // 0
-        // 0
-        // 0
-        // 0
-        // 1
-        // 1
-        // 1
-        // 1
-        // 1
-        // 1
-        // 3
-        // 3
-        // 3
-        // 3
-        // 3
-        // 3
-        // 4
-        // 4
-        // 4
-        // 4
-        // 4
-        // 4
+    const network = generateNetwork(fileContent);
 
-        const network = generateNetwork(fileContent);
-
-        console.log(network);
-    }
+    console.log(network);
 
     //prettier-ignore
     // const network = [
@@ -200,7 +169,7 @@ export default function main() {
 
     type Layer = { coverage: number, edges: number[] }[];
 
-    const network: Layer[] = [
+    const networkTest: Layer[] = [
         // Copy 1 (original)
         [
             // Altitude 0 (ground)
@@ -295,18 +264,13 @@ export default function main() {
     ];
 
     let altitudes: number[] = [];
-    {
-        altitudes = pathfind(network);
-    }
 
-    altitudes;
-    // console.log(altitudes);
+    altitudes = pathfind(network);
 
-    {
-        const altitudes = [1, 1, 1, 0, 0];
+    console.log(altitudes);
 
-        const outputContent = formatContent(altitudes);
+    const outputContent = formatContent(altitudes);
 
-        Deno.writeTextFileSync("./src/output/a_example.out", outputContent);
-    }
+    const outputFilePath = "./src/output/a_example.out";
+    Deno.writeTextFileSync(outputFilePath, outputContent);
 }
