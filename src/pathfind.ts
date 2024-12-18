@@ -1,4 +1,4 @@
-import dijkstra from "dijkstrajs";
+import dijkstrajs from "dijkstrajs";
 
 type Node = { coverage: number; edges: number[] };
 type Layer = Node[];
@@ -41,7 +41,7 @@ export function pathfind(network: Layer[]): number[] {
 
         // console.log(graph);
 
-        path = dijkstra.find_path(graph, startNode, endNode);
+        path = dijkstrajs.find_path(graph, startNode, endNode);
     }
     // console.log(path);
 
@@ -63,7 +63,7 @@ export function pathfind(network: Layer[]): number[] {
 
             pathAltitudes.push(pathAlt);
         }
-        console.log(pathAltitudes);
+        // console.log(pathAltitudes);
 
         for (let i = 0; i < pathAltitudes.length - 1; i++) {
             const shift = pathAltitudes[i + 1] - pathAltitudes[i];
