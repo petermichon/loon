@@ -19,4 +19,7 @@ export default function main() {
     // console.log(outputContent);
 
     Deno.writeTextFileSync("./src/output/a_example.out", outputContent);
+
+    // Print output file content
+    console.log(Deno.readTextFileSync("./src/output/a_example.out"));
 }
