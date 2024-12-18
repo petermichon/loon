@@ -1,5 +1,5 @@
 import { assertEquals } from "jsr:@std/assert";
-import { extractContent } from "./extract.ts";
+import { extractContent } from "../app/extract.ts";
 
 Deno.test("Test n°1", () => {
     const fileAsString =
