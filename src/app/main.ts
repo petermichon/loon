@@ -4,7 +4,7 @@ import { pathfind } from "./pathfind.ts";
 import { formatContent } from "./format.ts";
 
 export default function main() {
-    const fileAsString = Deno.readTextFileSync("./app/input/a_example.in");
+    const fileAsString = Deno.readTextFileSync("./input/a_example.in");
 
     const fileContent = extractContent(fileAsString);
     // console.log(fileContent);
@@ -18,8 +18,8 @@ export default function main() {
     const outputContent = formatContent(altitudes);
     // console.log(outputContent);
 
-    Deno.writeTextFileSync("./app/output/a_example.out", outputContent);
+    Deno.writeTextFileSync("./output/a_example.out", outputContent);
 
     // Print output file content
-    console.log(Deno.readTextFileSync("./app/output/a_example.out"));
+    console.log(Deno.readTextFileSync("./output/a_example.out"));
 }
